@@ -1,0 +1,97 @@
+@name Titus's Working Holo Bell [Version 1.0]
+@inputs On
+@outputs Hit
+@persist [MasterColor]:vector [MasterTexture StartSound EndSound]:string Layer1 OnRate OffRate Hit
+@trigger 
+@model models/monkcabdetailpack/alco/alcobell.mdl
+ 
+E = entity()
+
+if(dupefinished() | duped()){ reset() }
+if(first()){ E:setAlpha(0)
+
+    MasterColor = vec(255)
+    MasterTexture = "models/proppertextures/acrylic"
+    
+    StartSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_loop3.wav"
+    EndSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_end3.wav"
+    
+    # Hammer "Push/Pull" Rates. Set to be [somewhat] in sync with the bell
+    OnRate = 0.22
+    OffRate = 0.4
+    
+    A = 1
+    holoCreate(A)
+    holoParent(A,E)
+    holoModel(A, "models/monkcabdetailpack/alco/alcobell.mdl")
+    holoColor(A,MasterColor)
+    #holoMaterial(A,MasterTexture)
+    holoPos(A,E:toWorld(vec(0,0,0)))
+    holoAng(A,E:toWorld(ang(0,0,0)))
+    holoBodygroup(A,1,1)
+    holoEntity(A):setSubMaterial(1,MasterTexture)
+
+    A = 2
+    holoCreate(A)
+    holoParent(A,E)
+    holoModel(A, "models/sprops/misc/origin.mdl")
+    holoColor(A,MasterColor)
+    holoMaterial(A,MasterTexture)
+    holoPos(A,E:toWorld(vec(0,0,0)))
+    holoAng(A,E:toWorld(ang(0,0,0)))
+    holoAlpha(A,0)
+        
+    A = 3
+    holoCreate(A)
+    holoParent(A,2)
+    holoModel(A, "models/sprops/cylinders/size_2/cylinder_3x12.mdl")
+    holoScale(A,vec(0.65))
+    holoColor(A,MasterColor)
+    holoMaterial(A,MasterTexture)
+    holoPos(A,holoEntity(2):toWorld(vec(0,0,-2)))
+    holoAng(A,holoEntity(2):toWorld(ang(0,0,0)))
+    
+    A = 4
+    holoCreate(A)
+    holoParent(A,2)
+    holoModel(A, "models/sprops/geometry/sphere_3.mdl")
+    holoScale(A,vec(1.1))
+    holoColor(A,MasterColor)
+    holoMaterial(A,MasterTexture)
+    holoPos(A,holoEntity(2):toWorld(vec(0,0,-7.2)))
+    holoAng(A,holoEntity(2):toWorld(ang(0,0,0)))
+ 
+function number angset(Var,Smoothing){ #Value Smoothing
+Layer1 = Layer1 + (Var - Layer1) /  max(Smoothing,0) 
+return Layer1
+}   
+    
+}
+
+if(changed(On)&On){
+soundPlay(1,0,StartSound)   
+timer("hit1",OffRate*1000)    
+Hit = 0
+}
+
+if(changed(!On)&!On){
+soundPlay(1,0,EndSound)   
+stoptimer("hit1")
+stoptimer("hit2")
+Hit = 0
+}
+
+if(clk("hit1")){
+Hit = 1   
+timer("hit2",OnRate*1000)     
+}
+
+if(clk("hit2")){
+Hit = 0   
+timer("hit1",OffRate*1000)     
+}
+
+interval(150)
+
+holoAng(2,E:toWorld(ang(-45*angset(Hit,2),0,0)))
+
