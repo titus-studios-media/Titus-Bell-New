@@ -10,8 +10,8 @@ E = entity()
 if(dupefinished() | duped()){ reset() }
 if(first()){ E:setAlpha(0)
 
-    MasterColor = vec(127,0,0)
-    MasterTexture = "jazzie/trains/wall01"
+    MasterColor = vec(255,255,255)
+    MasterTexture = "models/proppertextures/acrylic"
     
     StartSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_loop3.wav"
     EndSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_end3.wav"
@@ -20,7 +20,7 @@ if(first()){ E:setAlpha(0)
     OnRate = 0.22
     OffRate = 0.4
     
-    MasterScale = vec(0.85)
+    MasterScale = vec(1,1,1)
     
     A = 1
     holoCreate(A)
