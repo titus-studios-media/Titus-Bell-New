@@ -1,7 +1,7 @@
 @name Titus's Working Holo Bell [Version 1.0]
-@inputs On
+@inputs ToggleInput NonToggleInput
 @outputs Hit
-@persist [MasterColor]:vector [MasterTexture StartSound EndSound]:string Layer1 OnRate OffRate Hit
+@persist [MasterColor MasterScale]:vector [MasterTexture StartSound EndSound]:string Layer1 OnRate OffRate Hit On
 @trigger 
 @model models/monkcabdetailpack/alco/alcobell.mdl
  
@@ -10,8 +10,8 @@ E = entity()
 if(dupefinished() | duped()){ reset() }
 if(first()){ E:setAlpha(0)
 
-    MasterColor = vec(255)
-    MasterTexture = "models/proppertextures/acrylic"
+    MasterColor = vec(127,0,0)
+    MasterTexture = "jazzie/trains/wall01"
     
     StartSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_loop3.wav"
     EndSound = "gsgtrainsounds/bells/emd_8004156_bronze_bell_end3.wav"
@@ -20,16 +20,19 @@ if(first()){ E:setAlpha(0)
     OnRate = 0.22
     OffRate = 0.4
     
+    MasterScale = vec(0.85)
+    
     A = 1
     holoCreate(A)
     holoParent(A,E)
     holoModel(A, "models/monkcabdetailpack/alco/alcobell.mdl")
     holoColor(A,MasterColor)
     #holoMaterial(A,MasterTexture)
-    holoPos(A,E:toWorld(vec(0,0,0)))
+    holoPos(A,E:toWorld(vec(0,0,0)*MasterScale))
     holoAng(A,E:toWorld(ang(0,0,0)))
     holoBodygroup(A,1,1)
     holoEntity(A):setSubMaterial(1,MasterTexture)
+    holoScale(A,vec(1)*MasterScale)
 
     A = 2
     holoCreate(A)
@@ -40,32 +43,41 @@ if(first()){ E:setAlpha(0)
     holoPos(A,E:toWorld(vec(0,0,0)))
     holoAng(A,E:toWorld(ang(0,0,0)))
     holoAlpha(A,0)
+    holoScale(A,vec(1)*MasterScale)
         
     A = 3
     holoCreate(A)
     holoParent(A,2)
     holoModel(A, "models/sprops/cylinders/size_2/cylinder_3x12.mdl")
-    holoScale(A,vec(0.65))
+    holoScale(A,vec(0.65)*MasterScale)
     holoColor(A,MasterColor)
     holoMaterial(A,MasterTexture)
-    holoPos(A,holoEntity(2):toWorld(vec(0,0,-2)))
+    holoPos(A,holoEntity(2):toWorld(vec(0,0,-2)*MasterScale))
     holoAng(A,holoEntity(2):toWorld(ang(0,0,0)))
     
     A = 4
     holoCreate(A)
     holoParent(A,2)
     holoModel(A, "models/sprops/geometry/sphere_3.mdl")
-    holoScale(A,vec(1.1))
+    holoScale(A,vec(1.1)*MasterScale)
     holoColor(A,MasterColor)
     holoMaterial(A,MasterTexture)
-    holoPos(A,holoEntity(2):toWorld(vec(0,0,-7.2)))
+    holoPos(A,holoEntity(2):toWorld(vec(0,0,-7.2)*MasterScale))
     holoAng(A,holoEntity(2):toWorld(ang(0,0,0)))
  
 function number angset(Var,Smoothing){ #Value Smoothing
 Layer1 = Layer1 + (Var - Layer1) /  max(Smoothing,0) 
 return Layer1
+}       
+}
+
+if(->ToggleInput & !->NonToggleInput){
+On = ToggleInput    
+}
+elseif(!->ToggleInput & ->NonToggleInput){
+if(changed(NonToggleInput)&NonToggleInput){
+On = !On    
 }   
-    
 }
 
 if(changed(On)&On){
